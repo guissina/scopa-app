@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Briscola — a Heloisa vai perder feio</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Game Styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Favicon (playing card emoji) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🃏</text></svg>">
+</head>
+<body>
+    <div class="game-container">
+
+        <!-- ═══ HEADER ═══ -->
+        <header class="game-header">
+            <div class="game-title">
+                Briscola
+                <span class="subtitle">Oi amor joga briscola cmg te amo</span>
+            </div>
+
+            <div id="turn-indicator" class="turn-indicator">
+                Pronto
+            </div>
+
+            <div class="scoreboard">
+                <div class="score-block">
+                    <div class="label">Tu</div>
+                    <div class="value" id="player-score">0</div>
+                    <div class="tricks">mões: <span id="player-tricks">0</span></div>
+                </div>
+                <div class="score-divider">—</div>
+                <div class="score-block">
+                    <div class="label">Oponente</div>
+                    <div class="value" id="opponent-score">0</div>
+                    <div class="tricks">mão: <span id="opponent-tricks">0</span></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ═══ PLAYING TABLE ═══ -->
+        
+        <div class="table-area">
+            <img src="assets/cards/eu_e_ela.JPG" alt="" class="imgbg">
+            
+
+            <!-- Opponent Hand (face-down) -->
+            <div class="hand-area opponent" id="opponent-hand">
+                <!-- Cards rendered by JS -->
+            </div>
+
+            <!-- Middle: Deck + Table -->
+            <div class="middle-area">
+
+                <!-- Deck Section -->
+                <div class="deck-section">
+                    <div class="deck-pile" id="deck-area">
+                        <!-- Deck pile rendered by JS -->
+                    </div>
+                    <div class="deck-counter">
+                        Maço: <span id="deck-count">34</span>
+                    </div>
+                    <div id="briscola-slot">
+                        <!-- Briscola indicator rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Table Center (played cards) -->
+                <div class="table-center" id="table-cards">
+                    <!-- Played cards appear here -->
+                </div>
+
+            </div>
+
+            <!-- Player Hand (face-up, clickable) -->
+            <div class="hand-area player" id="player-hand">
+                <!-- Cards rendered by JS -->
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ═══ MESSAGE BOX ═══ -->
+    <div class="message-box" id="message-box">
+        <span id="message-text"></span>
+    </div>
+
+    <!-- ═══ GAME OVERLAY (start screen / game over) ═══ -->
+    <div class="game-overlay" id="game-overlay">
+        <div class="overlay-content">
+            <h1 class="overlay-title" id="overlay-title">🃏 Briscola</h1>
+            <p class="overlay-message" id="overlay-message">
+                Joga comigo eloisa te amo
+            </p>
+            <button class="overlay-btn" id="overlay-btn">Jogar</button>
+        </div>
+    </div>
+
+    <!-- ═══ SCRIPTS ═══ -->
+    <!-- Load order matters: data → renderer → UI → controller -->
+    <script src="js/cardData.js"></script>
+    <script src="js/cardRenderer.js"></script>
+    <script src="js/gameUI.js"></script>
+    <script src="js/gameController.js"></script>
+
+    <!--
+        ┌─────────────────────────────────────────────────────┐
+        │  NOTE: briscola.js (your backend) is NOT loaded     │
+        │  here. When you're ready to integrate, add:         │
+        │                                                     │
+        │  <script src="briscola.js"></script>                │
+        │                                                     │
+        │  Then modify gameController.js to call your         │
+        │  backend functions instead of the demo logic.       │
+        └─────────────────────────────────────────────────────┘
+    -->
+
+</body>
+</html>

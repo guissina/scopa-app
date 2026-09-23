@@ -1,0 +1,686 @@
+/* ═══════════════════════════════════════════════════════════
+   BRISCOLA — Italian Card Game Styles
+   Theme: Classic Italian tavern / felt table
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Google Fonts (loaded in HTML) ─── */
+/* Playfair Display: elegant serif for headings
+   Lora: warm readable serif for body
+   Cormorant Garamond: decorative numbers */
+
+/* ─── CSS Variables ─── */
+:root {
+    /* Table */
+    --felt-green: #1a5c2e;
+    --felt-dark: #12421f;
+    --felt-light: #237a3d;
+    --table-border: #8b6914;
+
+    /* Italian palette */
+    --gold: #d4a017;
+    --gold-light: #f0d060;
+    --gold-dark: #8b6914;
+    --crimson: #8b1a1a;
+    --crimson-light: #c0392b;
+    --navy: #1a1a3e;
+    --parchment: #f5f0e1;
+    --parchment-dark: #e0d5c0;
+
+    /* Cards — Piacentine proportions (3:5 ratio, taller than French cards) */
+    --card-width: 96px;
+    --card-height: 160px;
+    --card-radius: 6px;
+    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+    /* Layout */
+    --header-height: 60px;
+    --hand-area-height: 200px;
+}
+
+/* ─── Reset & Base ─── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: 'Lora', Georgia, 'Times New Roman', serif;
+    color: var(--parchment);
+    background: var(--navy);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+/* ─── Header ─── */
+.game-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 24px;
+    background: linear-gradient(180deg, var(--crimson) 0%, var(--crimson-light) 100%);
+    border-bottom: 3px solid var(--gold);
+    height: var(--header-height);
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.game-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
+}
+
+.game-title .subtitle {
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--parchment-dark);
+    display: block;
+    margin-top: -4px;
+}
+
+/* ─── Turn Indicator ─── */
+.turn-indicator {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 0.95rem;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.turn-indicator.your-turn {
+    background: var(--gold);
+    color: var(--navy);
+    animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+.turn-indicator.opponent-turn {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--parchment-dark);
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 8px rgba(212, 160, 23, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(212, 160, 23, 0.8); }
+}
+
+/* ─── Scoreboard ─── */
+.scoreboard {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.score-block {
+    text-align: center;
+    padding: 4px 12px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.25);
+    min-width: 70px;
+}
+
+.score-block .label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+    opacity: 0.8;
+}
+
+.score-block .value {
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gold-light);
+}
+
+.score-block .tricks {
+    font-size: 0.55rem;
+    color: var(--parchment-dark);
+    opacity: 0.7;
+}
+
+.score-divider {
+    font-size: 1.2rem;
+    color: var(--gold);
+    opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PLAYING TABLE (felt area)
+   ═══════════════════════════════════════════════════════════ */
+
+.table-area {
+    flex: 1;
+    background:
+        /* Subtle noise texture via repeating gradient */
+        repeating-conic-gradient(
+            rgba(0, 0, 0, 0.03) 0% 25%,
+            transparent 0% 50%
+        ) 0 0 / 4px 4px,
+        /* Radial vignette */
+        radial-gradient(
+            ellipse at center,
+            var(--felt-light) 0%,
+            var(--felt-green) 40%,
+            var(--felt-dark) 100%
+        );
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-left: 4px solid var(--gold-dark);
+    border-right: 4px solid var(--gold-dark);
+    overflow: hidden;
+    z-index: 1;
+}
+
+.imgbg {
+    z-index: -1;
+    position: absolute;
+    width: 100%;
+}
+
+/* Decorative corner flourishes */
+.table-area::before,
+.table-area::after {
+    content: '❧';
+    position: absolute;
+    font-size: 2rem;
+    color: rgba(212, 160, 23, 0.15);
+    z-index: 1;
+    pointer-events: none;
+}
+.table-area::before {
+    top: 12px;
+    left: 16px;
+}
+.table-area::after {
+    bottom: 12px;
+    right: 16px;
+    transform: rotate(180deg);
+}
+
+/* ─── Hand Areas ─── */
+.hand-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    min-height: 180px;
+    flex-shrink: 0;
+}
+
+.hand-area.opponent {
+    padding-top: 12px;
+    padding-bottom: 8px;
+    min-height: 160px;
+}
+
+.hand-area.player {
+    padding-top: 8px;
+    padding-bottom: 16px;
+    min-height: 190px;
+    background: linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.3) 0%,
+        transparent 100%
+    );
+    border-top: 1px solid rgba(212, 160, 23, 0.2);
+}
+
+/* ─── Middle Area (table + deck) ─── */
+.middle-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    padding: 20px;
+}
+
+.deck-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+}
+
+.deck-pile {
+    position: relative;
+    width: var(--card-width);
+    height: var(--card-height);
+}
+
+.deck-stack-card {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+}
+
+.deck-counter {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.8rem;
+    color: var(--gold);
+    opacity: 0.7;
+    text-align: center;
+}
+
+/* Briscola indicator (sideways card under deck) */
+.briscola-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.briscola-card {
+    transform: rotate(90deg) scale(0.8) !important;
+    transform-origin: center center;
+}
+
+.briscola-label {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 0.75rem;
+    text-align: center;
+    margin-top: 28px;
+}
+
+.briscola-suit-name {
+    font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Table Cards (played this trick) ─── */
+.table-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    min-width: 260px;
+    min-height: var(--card-height);
+    position: relative;
+}
+
+.played-by-player {
+    transform: translateY(10px);
+}
+
+.played-by-opponent {
+    transform: translateY(-10px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CARD STYLES
+   ═══════════════════════════════════════════════════════════ */
+
+.card {
+    width: var(--card-width);
+    height: var(--card-height);
+    perspective: 600px;
+    cursor: default;
+    position: relative;
+    flex-shrink: 0;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+    border-radius: var(--card-radius);
+}
+
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    border: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.card-face img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: calc(var(--card-radius) - 2px);
+    background: white;
+}
+
+.card-front {
+    background: white;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    background: var(--crimson);
+}
+
+/* ─── Clickable Cards ─── */
+.card.clickable {
+    cursor: pointer;
+}
+
+.card.clickable:hover {
+    transform: translateY(-16px) scale(1.05);
+    z-index: 10;
+    box-shadow: var(--card-hover-shadow);
+}
+
+.card.clickable:hover .card-inner {
+    box-shadow: 0 0 20px rgba(212, 160, 23, 0.5);
+}
+
+.card.clickable:active {
+    transform: translateY(-8px) scale(1.02);
+}
+
+/* ─── Card Highlight ─── */
+.card.highlight .card-inner {
+    box-shadow: 0 0 30px rgba(212, 160, 23, 0.8);
+    animation: card-glow 0.5s ease-in-out 3;
+}
+
+@keyframes card-glow {
+    0%, 100% { box-shadow: 0 0 15px rgba(212, 160, 23, 0.5); }
+    50% { box-shadow: 0 0 35px rgba(212, 160, 23, 1); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════════ */
+
+/* Deal animation (cards slide in from side) */
+.card.deal-in {
+    animation: dealIn 0.4s ease-out both;
+}
+
+@keyframes dealIn {
+    from {
+        opacity: 0;
+        transform: translateX(-80px) translateY(-40px) rotate(-15deg) scale(0.7);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) translateY(0) rotate(0) scale(1);
+    }
+}
+
+/* Card play animation (card moves to center) */
+.card-play-animation {
+    animation: playCard 0.4s ease-out both;
+}
+
+@keyframes playCard {
+    from {
+        opacity: 0.8;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Collect trick — cards slide off screen */
+.collect-down {
+    animation: collectDown 0.5s ease-in forwards;
+}
+
+@keyframes collectDown {
+    to {
+        transform: translateY(200px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+.collect-up {
+    animation: collectUp 0.5s ease-in forwards;
+}
+
+@keyframes collectUp {
+    to {
+        transform: translateY(-200px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MESSAGE BOX
+   ═══════════════════════════════════════════════════════════ */
+
+.message-box {
+    position: fixed;
+    bottom: 220px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: linear-gradient(135deg, var(--navy) 0%, #2c2c5e 100%);
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    text-align: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.message-box.visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GAME OVERLAY (start screen, game over)
+   ═══════════════════════════════════════════════════════════ */
+
+.game-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 30, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.game-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.overlay-content {
+    text-align: center;
+    padding: 48px 64px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(139, 26, 26, 0.9) 0%,
+            rgba(26, 26, 62, 0.95) 100%
+        );
+    border: 3px solid var(--gold);
+    border-radius: 20px;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    max-width: 420px;
+}
+
+.overlay-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.5rem;
+    color: var(--gold-light);
+    margin-bottom: 12px;
+    text-shadow: 2px 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+.overlay-message {
+    font-size: 1.1rem;
+    color: var(--parchment-dark);
+    margin-bottom: 32px;
+    line-height: 1.6;
+}
+
+.overlay-btn {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 14px 40px;
+    border: 2px solid var(--gold);
+    border-radius: 8px;
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dark) 100%);
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.overlay-btn:hover {
+    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(212, 160, 23, 0.5);
+}
+
+.overlay-btn:active {
+    transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+    :root {
+        --card-width: 72px;
+        --card-height: 120px;
+    }
+
+    .game-header {
+        padding: 6px 12px;
+    }
+
+    .game-title {
+        font-size: 1.2rem;
+    }
+
+    .game-title .subtitle {
+        display: none;
+    }
+
+    .score-block .value {
+        font-size: 1.2rem;
+    }
+
+    .middle-area {
+        gap: 30px;
+    }
+
+    .hand-area {
+        gap: 6px;
+        padding: 10px;
+        min-height: 140px;
+    }
+
+    .hand-area.player {
+        min-height: 150px;
+    }
+
+    .overlay-content {
+        padding: 32px;
+        margin: 16px;
+    }
+
+    .overlay-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --card-width: 54px;
+        --card-height: 90px;
+    }
+
+    .game-header {
+        flex-wrap: wrap;
+        height: auto;
+        gap: 4px;
+    }
+
+    .scoreboard {
+        gap: 8px;
+    }
+
+    .table-center {
+        gap: 15px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DECORATIVE ELEMENTS
+   ═══════════════════════════════════════════════════════════ */
+
+/* Gold divider line */
+.gold-divider {
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--gold) 50%,
+        transparent 100%
+    );
+    margin: 8px auto;
+}
+
+/* Suit colors for text */
+.suit-coppe   { color: #c0392b; }
+.suit-spade   { color: #5dade2; }
+.suit-denari  { color: #d4a017; }
+.suit-bastoni { color: #27ae60; }
